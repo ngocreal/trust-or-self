@@ -11,8 +11,7 @@ export default async function connectDB() {
       dbName: 'trust-or-self',
     });
     isConnected = true;
-    console.log('MongoDB connected');
-  } catch (error) {
+console.log('MongoDB connected:', uri, 'DB:', mongoose.connection.name);  } catch (error) {
     console.error('MongoDB connection error:', error);
     throw error;
   }

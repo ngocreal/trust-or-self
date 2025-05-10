@@ -42,6 +42,10 @@ export const createStatus = async (questionId: string): Promise<Status> => {
 
   if (!res.ok) {
     const errorData = await res.json();
+    // Nếu lỗi 409 thì fetch lại status
+    if (res.status === 409) {
+      return fetchStatus(questionId) as Promise<Status>;
+    }
     throw new Error(`Failed to create status: ${errorData.error || res.statusText}`);
   }
   return res.json();

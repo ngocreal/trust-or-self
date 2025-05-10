@@ -62,14 +62,12 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ error: 'Question ID does not exist' }, { status: 400 });
     }
 
-    // Find or create status for this question_id
     let status = await StatusModel.findOne({ question_id });
     if (!status) {
       // Nếu không tìm thấy status, tạo mới với giá trị mặc định
       status = new StatusModel({ question_id, count_a: 50, count_b: 50 });
     }
 
-    // Increment counts based on user choice
     if (choice === 'trust') {
       status.count_a += 1;
     } else if (choice === 'self') {

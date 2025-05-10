@@ -67,7 +67,6 @@ export default function TrustGamePage() {
     if (gameStarted && questionsLoaded && !currentQuestion && remainingQuestions.length > 0) {
       const nextQuestion = remainingQuestions[Math.floor(Math.random() * remainingQuestions.length)];
       setCurrentQuestion(nextQuestion);
-      // Fetch status for the newly set currentQuestion immediately
       const fetchNextQuestionStatus = async () => {
         try {
           let statusData = await fetchStatus(nextQuestion._id);
@@ -94,6 +93,7 @@ export default function TrustGamePage() {
   }, [currentQuestion, questionsLoaded, gameStarted, result, remainingQuestions]);
 
   const handleChoice = async (choice: 'trust' | 'self') => {
+    console.log('Bạn đã chọn:', choice);
     if (!currentQuestion || !status) return;
 
     setShowChoices(false);
@@ -111,7 +111,7 @@ export default function TrustGamePage() {
         count_a: updatedStatus.count_a,
         count_b: updatedStatus.count_b,
       });
-      // Cập nhật state với dữ liệu từ API để đảm bảo đồng bộ
+      // Cập nhật state với dữ liệu từ API đảm bảo đồng bộ
       setStatus(apiUpdatedStatus);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái trên server:', error);
