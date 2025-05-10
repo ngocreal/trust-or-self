@@ -1,8 +1,6 @@
 export interface Question {
   _id: string;
   content: string;
-  option_a: string;
-  option_b: string;
 }
 
 export interface Status {

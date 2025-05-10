@@ -4,8 +4,6 @@ import { Question } from '@/features/trust/types';
 const QuestionsSchema = new Schema<Question>({
   _id: { type: String, required: true },
   content: { type: String, required: true },
-  option_a: { type: String, required: true },
-  option_b: { type: String, required: true },
 });
 
 const QuestionsModel = models.Questions || model<Question>('Questions', QuestionsSchema);
