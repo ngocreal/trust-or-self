@@ -76,7 +76,7 @@ export default function DashboardLayout({
       {activeTab === 'questions' && (
         <div className="tableContainer bg-[#F3F4F6] rounded-lg p-2 sm:p-4 mb-4">
           <div className="tableHeader flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-2">
-            <h2 className="text-base sm:text-lg font-semibold text-gray-800">Danh sách câu hỏi</h2>
+            <h2 className="text-base sm:text-lg font-semibold text-gray-800">Danh sách tình huống</h2>
             <button
               onClick={() => setShowAddQuestionPopup(true)}
               className="addButton bg-[#3F99E9] text-white px-3 py-1 sm:px-4 sm:py-2 rounded hover:bg-[#1B1B62] flex items-center gap-2 transition-colors text-sm sm:text-base"
@@ -89,7 +89,7 @@ export default function DashboardLayout({
               <thead>
                 <tr className="bg-[#1B1B62] text-white">
                   <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">STT</th>
-                  <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Mã câu hỏi</th>
+                  <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Mã CH</th>
                   <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Câu hỏi</th>
                   <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Thao tác</th>
                 </tr>

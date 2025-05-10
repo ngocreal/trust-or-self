@@ -177,10 +177,10 @@ export default function TrustGamePage() {
 
   if (questionsLoaded && !currentQuestion && remainingQuestions.length === 0) {
     return (
-      <div className="h-screen bg-black flex flex-col items-center justify-center text-white">
-        <img src="/trust-or-self-logo.png" alt="Logo" className="w-72 mb-10" />
-        <h1 className="text-5xl font-bold mb-6">Chúc mừng</h1>
-        <p className="text-2xl mb-10">bạn đã hoàn thành trò chơi</p>
+      <div className="h-screen bg-[#686868] flex flex-col items-center justify-center text-white">
+        <img src="/trust-or-self-logo.png" alt="Logo" className="w-60 mb-15" />
+        <h1 className="text-7xl font-bold mb-10">Chúc mừng</h1>
+        <p className="text-4xl font-bold mb-10">bạn đã hoàn thành trò chơi</p>
         <button
           className="px-12 py-4 bg-[#f5e6cc] text-[#1b1b62] text-[20px] font-bold rounded-full cursor-pointer hover:bg-[#feb622] transition-colors duration-300 w-[300px]"
           onClick={() => window.location.reload()}

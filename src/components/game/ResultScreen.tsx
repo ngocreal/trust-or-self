@@ -11,7 +11,7 @@ interface ResultScreenProps {
 
 export default function ResultScreen({ result, onNextQuestion, onSettings, onShowRules }: ResultScreenProps) {
   return (
-    <div className="h-screen bg-black flex flex-col items-center justify-center text-white">
+    <div className="h-screen bg-[#686868] flex flex-col items-center justify-center text-white">
       <img src="/trust-or-self-logo.png" alt="Logo" className="w-72 mb-6" />
       <h1 className="text-4xl font-bold mb-4">{result.percentage}%</h1>
       <p className="text-xl mb-6">người cùng suy nghĩ với bạn</p>
@@ -20,7 +20,6 @@ export default function ResultScreen({ result, onNextQuestion, onSettings, onSho
         alt={result.choice}
         className="w-32 h-32 mb-6"
       />
-      <img src="/heart-shield.png" alt="Heart Shield" className="w-32 h-32 mb-6" />
       <button
         className="px-8 py-4 border-none rounded-[30px] bg-[#1b1b62] text-white text-[20px] font-bold cursor-pointer transition-colors duration-300 w-[250px] hover:bg-[#feb622]"
         onClick={onNextQuestion}
