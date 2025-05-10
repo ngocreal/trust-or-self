@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import StatusModel from '@/models/Status';
-import QuestionsModel from '@/models/Questions';
+import QuestionsModel from '@/models/Questions'; 
 import connectDB from '@/lib/db';
 
 export async function GET() {
@@ -8,8 +8,9 @@ export async function GET() {
     await connectDB();
     const statuses = await StatusModel.find();
     return NextResponse.json(statuses.length ? statuses : { message: 'No statuses found' });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch statuses' }, { status: 500 });
+  } catch (error: any) { 
+    console.error('Lỗi khi lấy danh sách trạng thái:', error);
+    return NextResponse.json({ error: 'Failed to fetch statuses', details: error.message }, { status: 500 });
   }
 }
 
@@ -17,61 +18,45 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
     const body = await req.json();
-    const { question_id } = body;
+    const { question_id, count_a, count_b } = body; // Đảm bảo lấy đủ các trường
 
-    // Validate question_id exists in Questions
-    const questionExists = await QuestionsModel.findById(question_id);
-    if (!questionExists) {
-      return NextResponse.json({ error: 'Question ID does not exist' }, { status: 400 });
+    if (!question_id) {
+        return NextResponse.json({ error: 'question_id là bắt buộc.' }, { status: 400 });
     }
 
-    // Check if a status already exists for this question_id
+    const questionExists = await QuestionsModel.findById(question_id);
+    if (!questionExists) {
+      return NextResponse.json({ error: 'Question ID không tồn tại.' }, { status: 400 });
+    }
+
     const existingStatus = await StatusModel.findOne({ question_id });
     if (existingStatus) {
-      return NextResponse.json({ error: 'Status already exists for this question_id' }, { status: 400 });
+      return NextResponse.json({ error: 'Trạng thái cho Question ID này đã tồn tại.' }, { status: 409 }); // 409 Conflict
     }
 
-    const status = new StatusModel({ ...body, count_a: 50, count_b: 50 });
-    await status.save();
-    return NextResponse.json(status, { status: 201 });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to add status' }, { status: 500 });
+    const newStatus = new StatusModel({
+      question_id,
+      count_a: count_a !== undefined ? count_a : 50, 
+      count_b: count_b !== undefined ? count_b : 50, 
+    });
+
+    await newStatus.save(); 
+
+    return NextResponse.json(newStatus, { status: 201 }); 
+  } catch (error: any) { 
+    console.error('Lỗi khi thêm trạng thái mới:', error);
+    if (error.code === 11000) { 
+      return NextResponse.json({ error: 'Trạng thái cho Question ID này đã tồn tại.' }, { status: 409 });
+    }
+    return NextResponse.json({ error: 'Lỗi server khi thêm trạng thái mới.', details: error.message }, { status: 500 });
   }
 }
 
-export async function PUT(req: NextRequest) {
-  try {
-    await connectDB();
-    const body = await req.json();
-    const { _id, question_id, count_a, count_b } = body;
-
-    // Validate question_id exists in Questions
-    const questionExists = await QuestionsModel.findById(question_id);
-    if (!questionExists) {
-      return NextResponse.json({ error: 'Question ID does not exist' }, { status: 400 });
-    }
-
-    const status = await StatusModel.findByIdAndUpdate(
-      _id,
-      { question_id, count_a, count_b },
-      { new: true }
-    );
-    if (!status) {
-      return NextResponse.json({ error: 'Status not found' }, { status: 404 });
-    }
-    return NextResponse.json(status);
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to update status' }, { status: 500 });
-  }
-}
-
-// New endpoint for user interactions (Trust/Self selection)
 export async function PATCH(req: NextRequest) {
   try {
     await connectDB();
     const { question_id, choice } = await req.json();
 
-    // Validate question_id exists in Questions
     const questionExists = await QuestionsModel.findById(question_id);
     if (!questionExists) {
       return NextResponse.json({ error: 'Question ID does not exist' }, { status: 400 });
@@ -80,6 +65,7 @@ export async function PATCH(req: NextRequest) {
     // Find or create status for this question_id
     let status = await StatusModel.findOne({ question_id });
     if (!status) {
+      // Nếu không tìm thấy status, tạo mới với giá trị mặc định
       status = new StatusModel({ question_id, count_a: 50, count_b: 50 });
     }
 
@@ -94,7 +80,8 @@ export async function PATCH(req: NextRequest) {
 
     await status.save();
     return NextResponse.json(status);
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to update status counts' }, { status: 500 });
+  } catch (error: any) { 
+    console.error('Lỗi khi cập nhật số liệu trạng thái:', error);
+    return NextResponse.json({ error: 'Failed to update status counts', details: error.message }, { status: 500 });
   }
 }

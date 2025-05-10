@@ -1,6 +1,8 @@
 export interface Question {
   _id: string;
   content: string;
+  createdAt?: string; 
+  updatedAt?: string; 
 }
 
 export interface Status {
@@ -8,9 +10,11 @@ export interface Status {
   question_id: string;
   count_a: number;
   count_b: number;
+  createdAt?: string; 
+  updatedAt?: string; 
 }
 
 export interface Result {
   percentage: number;
-  choice: string;
+  choice: 'trust' | 'self';
 }

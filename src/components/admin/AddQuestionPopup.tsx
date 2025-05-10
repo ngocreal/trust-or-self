@@ -34,22 +34,15 @@ export default function AddQuestionPopup({
         </button>
         <div className="formContainer p-3 sm:p-5">
           <form onSubmit={handleSubmit}>
-            <label className="formLabel block text-xs sm:text-sm font-medium mb-1 sm:mb-2 text-gray-700">Question ID</label>
-            <input
-              type="text"
-              value={newQuestion._id || ''}
-              onChange={(e) => setNewQuestion({ ...newQuestion, _id: e.target.value })}
-              placeholder="Question ID"
-              className="formInput w-full p-1 sm:p-2 border border-gray-300 rounded mb-2 sm:mb-4 text-xs sm:text-sm md:text-base"
-            />
             <label className="formLabel block text-xs sm:text-sm font-medium mb-1 sm:mb-2 text-gray-700">Câu hỏi</label>
-            <input
-              type="text"
-              value={newQuestion.content || ''}
-              onChange={(e) => setNewQuestion({ ...newQuestion, content: e.target.value })}
-              placeholder="Content"
-              className="formInput w-full p-1 sm:p-2 border border-gray-300 rounded mb-2 sm:mb-4 text-xs sm:text-sm md:text-base"
-            />
+                     <textarea
+                      value={newQuestion.content || ''}
+                      onChange={(e) =>
+                      setNewQuestion({ ...newQuestion, content: e.target.value })
+                      }
+                      placeholder="Nội dung câu hỏi"
+                      className="formInput w-full p-3 sm:p-4 border border-gray-300 rounded mb-2 sm:mb-4 text-sm sm:text-base md:text-lg resize-y min-h-[100px]"
+                      />
             {errorMessage && (
               <p className="text-red-500 text-xs sm:text-sm mb-2 sm:mb-4">{errorMessage}</p>
             )}

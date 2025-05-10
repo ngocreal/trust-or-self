@@ -39,8 +39,7 @@ export default function EditQuestionPopup({
             <label className="formLabel block text-xs sm:text-sm font-medium mb-1 sm:mb-2 text-gray-700">
               Nội dung câu hỏi
             </label>
-            <input
-              type="text"
+            <textarea
               value={editQuestion.content}
               onChange={(e) =>
                 setEditQuestion({ ...editQuestion, content: e.target.value })

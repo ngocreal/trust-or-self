@@ -149,7 +149,6 @@ export default function DashboardLayout({
               <thead>
                 <tr className="bg-[#1B1B62] text-white">
                   <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">STT</th>
-                  <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Mã trạng thái</th>
                   <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Mã câu hỏi</th>
                   <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Trust</th>
                   <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Self</th>
@@ -175,7 +174,6 @@ export default function DashboardLayout({
                     return (
                       <tr key={q._id} className="border border-gray-200 hover:bg-gray-100 transition-colors">
                         <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">{index + 1}</td>
-                        <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">{status ? status._id : '-'}</td>
                         <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">{q._id}</td>
                         <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">{status ? status.count_a : 50}</td>
                         <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">{status ? status.count_b : 50}</td>

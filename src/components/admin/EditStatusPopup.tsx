@@ -41,28 +41,29 @@ export default function EditStatusPopup({
         </button>
         <div className="formContainer p-3 sm:p-5">
           <form onSubmit={handleSubmit}>
-            <label className="formLabel block text-xs sm:text-sm font-medium mb-1 sm:mb-2 text-gray-700">Question ID</label>
+            <label className="formLabel block text-xs sm:text-sm font-medium mb-1 sm:mb-2 text-gray-700">Mã câu hỏi</label>
             <input
               type="text"
               value={editStatus.question_id}
               onChange={(e) => setEditStatus({ ...editStatus, question_id: e.target.value })}
-              placeholder="Question ID"
+              readOnly
+              placeholder="Mã câu hỏi"
               className="formInput w-full p-1 sm:p-2 border border-gray-300 rounded mb-2 sm:mb-4 text-xs sm:text-sm md:text-base"
             />
-            <label className="formLabel block text-xs sm:text-sm font-medium mb-1 sm:mb-2 text-gray-700">Trust (Count A)</label>
+            <label className="formLabel block text-xs sm:text-sm font-medium mb-1 sm:mb-2 text-gray-700">Trust</label>
             <input
               type="number"
               value={editStatus.count_a}
               onChange={(e) => setEditStatus({ ...editStatus, count_a: parseInt(e.target.value) })}
-              placeholder="Trust (Count A)"
+              placeholder="Trust"
               className="formInput w-full p-1 sm:p-2 border border-gray-300 rounded mb-2 sm:mb-4 text-xs sm:text-sm md:text-base"
             />
-            <label className="formLabel block text-xs sm:text-sm font-medium mb-1 sm:mb-2 text-gray-700">Self (Count B)</label>
+            <label className="formLabel block text-xs sm:text-sm font-medium mb-1 sm:mb-2 text-gray-700">Self</label>
             <input
               type="number"
               value={editStatus.count_b}
               onChange={(e) => setEditStatus({ ...editStatus, count_b: parseInt(e.target.value) })}
-              placeholder="Self (Count B)"
+              placeholder="Self"
               className="formInput w-full p-1 sm:p-2 border border-gray-300 rounded mb-2 sm:mb-4 text-xs sm:text-sm md:text-base"
             />
             {errorMessage && (
