@@ -1,5 +1,6 @@
 import { Question, Status } from '@/features/trust/types';
-import { FaEdit } from 'react-icons/fa';
+import { FaTrash, FaRegEdit, FaPlus, FaUser, FaSignOutAlt } from 'react-icons/fa';
+import Image from 'next/image';
 
 interface DashboardLayoutProps {
   activeTab: 'questions' | 'status';
@@ -31,21 +32,24 @@ export default function DashboardLayout({
   handleProfile,
 }: DashboardLayoutProps) {
   return (
-    <div className="w-full">
+    <div className="w-full min-h-screen flex flex-col">
       <div className="header flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
-        <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+        <div className="flex items-center gap-3">
+          <Image src="/trust-or-self-logo.png" alt="Logo" width={90} height={90} />
+          <span className="text-lg sm:text-xl md:text-3xl font-bold text-gray-800">Xin chào Admin!</span>
+        </div>
         <div className="headerButtons flex gap-2 flex-wrap">
           <button
             onClick={handleProfile}
-            className="profileButton bg-[#3F99E9] text-white px-3 py-1 sm:px-4 sm:py-2 rounded hover:bg-[#1B1B62] transition-colors text-sm sm:text-base"
+            className="profileButton bg-[#3F99E9] text-white px-3 py-1 sm:px-4 sm:py-2 rounded hover:bg-[#1B1B62] transition-colors text-sm sm:text-base flex items-center gap-2 cursor-pointer"
           >
-            Hồ sơ
+            <FaUser /> Hồ sơ
           </button>
           <button
             onClick={handleLogout}
-            className="logoutButton bg-[#3F99E9] text-white px-3 py-1 sm:px-4 sm:py-2 rounded hover:bg-[#1B1B62] transition-colors text-sm sm:text-base"
+            className="logoutButton bg-[#3F99E9] text-white px-3 py-1 sm:px-4 sm:py-2 rounded hover:bg-[#1B1B62] transition-colors text-sm sm:text-base flex items-center gap-2 cursor-pointer"
           >
-            Đăng xuất
+            <FaSignOutAlt /> Thoát
           </button>
         </div>
       </div>
@@ -53,7 +57,7 @@ export default function DashboardLayout({
       <div className="tabs flex gap-2 mb-4 overflow-x-auto whitespace-nowrap">
         <button
           onClick={() => setActiveTab('questions')}
-          className={`tab px-3 py-1 sm:px-4 sm:py-2 rounded text-sm sm:text-base ${
+          className={`tab px-3 py-1 sm:px-4 sm:py-2 rounded text-sm sm:text-base cursor-pointer ${
             activeTab === 'questions'
               ? 'bg-[#1B1B62] text-white'
               : 'bg-[#3F99E9] text-white hover:bg-[#1B1B62] transition-colors'
@@ -63,7 +67,7 @@ export default function DashboardLayout({
         </button>
         <button
           onClick={() => setActiveTab('status')}
-          className={`tab px-3 py-1 sm:px-4 sm:py-2 rounded text-sm sm:text-base ${
+          className={`tab px-3 py-1 sm:px-4 sm:py-2 rounded text-sm sm:text-base cursor-pointer ${
             activeTab === 'status'
               ? 'bg-[#1B1B62] text-white'
               : 'bg-[#3F99E9] text-white hover:bg-[#1B1B62] transition-colors'
@@ -76,22 +80,22 @@ export default function DashboardLayout({
       {activeTab === 'questions' && (
         <div className="tableContainer bg-[#F3F4F6] rounded-lg p-2 sm:p-4 mb-4">
           <div className="tableHeader flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-2">
-            <h2 className="text-base sm:text-lg font-semibold text-gray-800">Danh sách tình huống</h2>
+            <h2 className="text-base sm:text-lg font-semibold text-gray-800">Danh sách câu hỏi</h2>
             <button
               onClick={() => setShowAddQuestionPopup(true)}
-              className="addButton bg-[#3F99E9] text-white px-3 py-1 sm:px-4 sm:py-2 rounded hover:bg-[#1B1B62] flex items-center gap-2 transition-colors text-sm sm:text-base"
+              className="addButton bg-[#3F99E9] text-white px-3 py-1 sm:px-4 sm:py-2 rounded hover:bg-[#1B1B62] flex items-center gap-2 transition-colors text-sm sm:text-base cursor-pointer"
             >
-              Thêm câu hỏi
+              <FaPlus /> Thêm câu hỏi
             </button>
           </div>
           <div className="tableWrapper overflow-x-auto">
             <table className="table w-full border-collapse bg-[#F3F4F6]">
               <thead>
                 <tr className="bg-[#1B1B62] text-white">
-                  <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">STT</th>
-                  <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Mã CH</th>
-                  <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Câu hỏi</th>
-                  <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Thao tác</th>
+                  <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base w-20">STT</th>
+                  <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base w-20 truncate">Mã CH</th>
+                  <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base max-w-xs break-words">Câu hỏi</th>
+                  <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base w-[150px]">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
@@ -110,25 +114,27 @@ export default function DashboardLayout({
                 ) : (
                   questions.map((q, index) => (
                     <tr key={q._id} className="border border-gray-200 hover:bg-gray-100 transition-colors">
-                      <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">{index + 1}</td>
-                      <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">{q._id}</td>
-                      <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">{q.content}</td>
-                      <td className="actionCell border border-gray-200 p-1 sm:p-2 flex gap-1 sm:gap-2 flex-wrap">
-                        <button
-                          onClick={() => {
-                            setEditQuestion(q);
-                            setShowEditQuestionPopup(true);
-                          }}
-                          className="editButton bg-[#F5C035] text-white px-2 py-1 rounded hover:bg-[#1B1B62] transition-colors text-xs sm:text-sm"
-                        >
-                          Sửa
-                        </button>
-                        <button
-                          onClick={() => setShowDeleteQuestionPopup(q._id)}
-                          className="deleteButton bg-[#EF6921] text-white px-2 py-1 rounded hover:bg-[#1B1B62] transition-colors text-xs sm:text-sm"
-                        >
-                          Xóa
-                        </button>
+                      <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base font-bold text-center">{index + 1}</td>
+                      <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base truncate text-center">{q._id}</td>
+                      <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base w-140 break-words">{q.content}</td>
+                      <td className="actionCell border border-gray-200 p-1 sm:p-2 w-[120px]">
+                        <div className="flex justify-center items-center gap-2">
+                          <button
+                            onClick={() => {
+                              setEditQuestion(q);
+                              setShowEditQuestionPopup(true);
+                            }}
+                            className="editButton bg-[#F5C035] text-white px-2 py-1 rounded hover:bg-[#1B1B62] transition-colors text-xs sm:text-sm flex items-center gap-1 cursor-pointer"
+                          >
+                             <FaRegEdit size={20}/>
+                          </button>
+                          <button
+                            onClick={() => setShowDeleteQuestionPopup(q._id)}
+                            className="deleteButton bg-[#EF6921] text-white px-2 py-1 rounded hover:bg-[#1B1B62] transition-colors text-xs sm:text-sm flex items-center gap-1 cursor-pointer"
+                          >
+                            <FaTrash size={20}/>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -149,7 +155,7 @@ export default function DashboardLayout({
               <thead>
                 <tr className="bg-[#1B1B62] text-white">
                   <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">STT</th>
-                  <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Mã câu hỏi</th>
+                  <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Mã CH</th>
                   <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Trust</th>
                   <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Self</th>
                   <th className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">Thao tác</th>
@@ -173,17 +179,18 @@ export default function DashboardLayout({
                     const status = statuses.find((s) => s.question_id === q._id);
                     return (
                       <tr key={q._id} className="border border-gray-200 hover:bg-gray-100 transition-colors">
-                        <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">{index + 1}</td>
-                        <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">{q._id}</td>
-                        <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">{status ? status.count_a : 50}</td>
-                        <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base">{status ? status.count_b : 50}</td>
+                        <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base text-center font-bold">{index + 1}</td>
+                        <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base text-center">{q._id}</td>
+                        <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base text-center">{status ? status.count_a : 50}</td>
+                        <td className="border border-gray-200 p-1 sm:p-2 text-xs sm:text-sm md:text-base text-center">{status ? status.count_b : 50}</td>
                         <td className="actionCell border border-gray-200 p-1 sm:p-2">
+                          <div className="flex justify-center items-center gap-2">
                           <button
                             onClick={() => handleEditStatusClick(status || null, q)}
-                            className="editButton bg-[#F5C035] text-white px-2 py-1 rounded hover:bg-[#1B1B62] flex items-center gap-1 transition-colors text-xs sm:text-sm"
+                            className="editButton bg-[#F5C035] text-white px-2 py-1 rounded hover:bg-[#1B1B62] flex items-center gap-1 transition-colors text-xs sm:text-sm cursor-pointer"
                           >
-                            <FaEdit /> Sửa
-                          </button>
+                            <FaRegEdit size={20}/>
+                          </button></div>
                         </td>
                       </tr>
                     );
@@ -194,6 +201,10 @@ export default function DashboardLayout({
           </div>
         </div>
       )}
+
+      <footer className="mt-auto py-4 text-center text-gray-500 text-xs sm:text-sm">
+        Bản quyền thuộc về FLASH VN & được cấp phép bởi nhóm cộng đồng.
+      </footer>
     </div>
   );
 }

@@ -3,12 +3,13 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Question, Status, Result } from '@/features/trust/types';
 import { fetchQuestions, fetchStatus, updateStatus, createStatus } from '@/features/trust/api';
-import { FaWrench, FaQuestion } from 'react-icons/fa';
-import RulesPopup from '@/components/game/RulesPopup';
+import { FaRegClock } from 'react-icons/fa';
+import RulesPopup from '@/components/game/Rules';
 import LoadingScreen from '@/components/game/LoadingScreen';
 import StartScreen from '@/components/game/StartScreen';
 import ResultScreen from '@/components/game/ResultScreen';
 import QuestionScreen from '@/components/game/QuestionScreen';
+import FinishScreen from '@/components/game/FinishScreen';
 
 export default function TrustGamePage() {
   const [showRulesPopup, setShowRulesPopup] = useState(false);
@@ -20,6 +21,10 @@ export default function TrustGamePage() {
   const [status, setStatus] = useState<Status | null>(null);
   const [result, setResult] = useState<Result | null>(null);
   const [showChoices, setShowChoices] = useState(false);
+  const [showTimerMenu, setShowTimerMenu] = useState(false);
+  const [timerSeconds, setTimerSeconds] = useState<number | null>(null);
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [isLastThreeSeconds, setIsLastThreeSeconds] = useState(false);
   const router = useRouter();
 
   const handleSettings = useCallback(() => router.push('/login'), [router]);
@@ -42,7 +47,6 @@ export default function TrustGamePage() {
 
       let statusData = await fetchStatus(initialQuestion._id);
       if (!statusData) {
-        // Nếu không tìm thấy, tạo mới
         statusData = await createStatus(initialQuestion._id);
         console.log('Tạo trạng thái mới:', statusData);
       }
@@ -92,11 +96,40 @@ export default function TrustGamePage() {
     }
   }, [currentQuestion, questionsLoaded, gameStarted, result, remainingQuestions]);
 
+  // Đếm ngược
+  useEffect(() => {
+    if (timerSeconds === null) return;
+    setTimeLeft(timerSeconds);
+    setIsLastThreeSeconds(false);
+
+    const interval = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setTimeout(() => {
+            setTimerSeconds(null);
+          }, 3000);
+          return 0;
+        }
+        // Khi còn 3 giây, chớp đỏ
+        if (prev === 4) {
+          setIsLastThreeSeconds(true);
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [timerSeconds]);
+
   const handleChoice = async (choice: 'trust' | 'self') => {
     console.log('Bạn đã chọn:', choice);
     if (!currentQuestion || !status) return;
 
     setShowChoices(false);
+
+    // Reset timer khi chọn 
+    setTimerSeconds(null);
 
     const updatedStatus = { ...status };
 
@@ -111,7 +144,6 @@ export default function TrustGamePage() {
         count_a: updatedStatus.count_a,
         count_b: updatedStatus.count_b,
       });
-      // Cập nhật state với dữ liệu từ API đảm bảo đồng bộ
       setStatus(apiUpdatedStatus);
     } catch (error) {
       console.error('Lỗi khi cập nhật trạng thái trên server:', error);
@@ -124,10 +156,9 @@ export default function TrustGamePage() {
           (choice === 'trust' ? updatedStatus.count_a : updatedStatus.count_b) / total * 100
         );
 
-    setResult({
-      percentage,
-      choice,
-    });
+    setTimeout(() => {
+      setResult({ percentage, choice });
+    }, 1000);
   };
 
   const handleNextQuestion = async () => {
@@ -158,40 +189,30 @@ export default function TrustGamePage() {
   if (!gameStarted) {
     return (
       <StartScreen
-        onStartGame={() => { setGameStarted(true); }}
+        onStartGame={() => { setGameStarted(true); fetchGameData(); }} 
         onShowRulesPopup={() => setShowRulesPopup(true)}
         onSettings={handleSettings}
         showRulesPopup={showRulesPopup}
-        onCloseRulesPopup={() => { setShowRulesPopup(false); fetchGameData(); }}
+        onCloseRulesPopup={() => setShowRulesPopup(false)}
       />
     );
   }
 
   if (gameStarted && showRulesPopup) {
-    return <RulesPopup onClose={() => { setShowRulesPopup(false); fetchGameData(); }} />;
+    return <RulesPopup onClose={() => setShowRulesPopup(false)} />;
   }
 
   if (gameStarted && !questionsLoaded) {
-    return <LoadingScreen text="Đang tải câu hỏi và trạng thái..." onSettings={handleSettings} onShowRules={() => setShowRulesPopup(true)} />;
+    return <LoadingScreen text="Đang tải câu hỏi..." onSettings={handleSettings} onShowRules={() => setShowRulesPopup(true)} />;
   }
 
   if (questionsLoaded && !currentQuestion && remainingQuestions.length === 0) {
     return (
-      <div className="h-screen bg-[#686868] flex flex-col items-center justify-center text-white">
-        <img src="/trust-or-self-logo.png" alt="Logo" className="w-60 mb-15" />
-        <h1 className="text-7xl font-bold mb-10">Chúc mừng</h1>
-        <p className="text-4xl font-bold mb-10">bạn đã hoàn thành trò chơi</p>
-        <button
-          className="px-12 py-4 bg-[#f5e6cc] text-[#1b1b62] text-[20px] font-bold rounded-full cursor-pointer hover:bg-[#feb622] transition-colors duration-300 w-[300px]"
-          onClick={() => window.location.reload()}
-        >
-          Chơi lại
-        </button>
-        <button className="absolute bottom-5 right-5 text-white text-2xl" onClick={handleSettings}><FaWrench /></button>
-        <button className="absolute top-5 right-5 w-10 h-10 bg-[#1b1b62] rounded-full flex items-center justify-center text-white text-xl hover:bg-[#feb622] transition-colors duration-300" onClick={() => setShowRulesPopup(true)}>
-          <FaQuestion />
-        </button>
-      </div>
+      <FinishScreen
+        onReplay={() => window.location.reload()}
+        onSettings={handleSettings}
+        onShowRules={() => setShowRulesPopup(true)}
+      />
     );
   }
 
@@ -207,11 +228,49 @@ export default function TrustGamePage() {
   }
 
   return (
-    <QuestionScreen
-      currentQuestion={currentQuestion}
-      showChoices={showChoices}
-      onChoice={handleChoice}
-      onShowRules={() => setShowRulesPopup(true)}
-    />
+    <div className="relative w-full h-screen bg-[#686868]">
+      {currentQuestion && !result && timerSeconds !== null && (
+        <div className={
+          `absolute top-70 left-1/2 -translate-x-1/2 px-10 py-4 rounded-xl bg-blue-700 text-white text-6xl font-bold select-none shadow-lg z-50 border-4 border-blue-900
+          ${isLastThreeSeconds ? 'animate-pulse text-red-500 bg-red-700 border-red-900' : ''}`
+        }>
+          {`${String(Math.floor(timeLeft / 60)).padStart(2, '0')}:${String(timeLeft % 60).padStart(2, '0')}`}
+        </div>
+      )}
+
+      <div className="absolute bottom-5 right-5 flex flex-col items-end gap-4 z-40">
+        <div className="relative">
+          <button
+            className="w-10 h-10 bg-[#1b1b62] rounded-full flex items-center justify-center text-white text-xl hover:bg-[#feb622] transition-colors duration-300 cursor-pointer"
+            onClick={() => setShowTimerMenu(v => !v)}
+          >
+            <FaRegClock />
+          </button>
+          {showTimerMenu && (
+            <div className="absolute bottom-12 right-0 bg-white rounded-lg shadow-lg flex flex-col z-50">
+              {[0.1, 2, 5, 10, 15, 30, 60].map(min => (
+                <button
+                  key={min}
+                  className="px-6 py-2 text-[#1b1b62] hover:bg-[#feb622] hover:text-white font-bold text-lg"
+                  onClick={() => {
+                    setTimerSeconds(min * 60);
+                    setTimeLeft(min * 60);
+                    setShowTimerMenu(false);
+                  }}
+                >
+                  {min === 0.1 ? '6s' : `${min}p`}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+      <QuestionScreen
+        currentQuestion={currentQuestion}
+        showChoices={showChoices}
+        onChoice={handleChoice}
+        onShowRules={() => setShowRulesPopup(true)}
+      />
+    </div>
   );
 }

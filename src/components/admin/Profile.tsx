@@ -1,76 +1,16 @@
-'use client';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Question, Status } from '@/features/trust/types';
-import { useAdminData } from '@/hooks/useAdminData';
-import Dashboard from '@/components/admin/Dashboard';
-import AddQuestion from '@/components/admin/AddQuestion';
-import EditQuestion from '@/components/admin/EditQuestion';
-import DeleteQuestion from '@/components/admin/DeleteQuestion';
-import EditStatus from '@/components/admin/EditStatus';
+import React, { useState } from "react";
 
-export default function AdminDashboard() {
-  const router = useRouter();
-  const {
-    questions,
-    statuses,
-    loading,
-    errorMessage,
-    setErrorMessage,
-    fetchData,
-    handleAddQuestion,
-    handleEditQuestion,
-    handleDeleteQuestion,
-    handleEditStatus,
-    handleResetStatus,
-  } = useAdminData();
-
-  const [editQuestion, setEditQuestion] = useState<Question | null>(null);
-  const [editStatus, setEditStatus] = useState<Status | null>(null);
-  const [newQuestion, setNewQuestion] = useState<Partial<Question>>({ _id: '', content: ''});
-  const [showAddQuestionPopup, setShowAddQuestionPopup] = useState(false);
-  const [showEditQuestionPopup, setShowEditQuestionPopup] = useState(false);
-  const [showDeleteQuestionPopup, setShowDeleteQuestionPopup] = useState<string | null>(null);
-  const [showEditStatusPopup, setShowEditStatusPopup] = useState(false);
-  const [activeTab, setActiveTab] = useState<'questions' | 'status'>('questions');
-
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      router.replace('/login'); 
-    }
-  }, [router]);
-
-  const handleEditStatusClick = (status: Status | null, question: Question) => {
-    if (status) {
-      setEditStatus(status);
-    } else {
-      setEditStatus({
-        _id: '',
-        question_id: question._id,
-        count_a: 50,
-        count_b: 50,
-      });
-    }
-    setShowEditStatusPopup(true);
-    setErrorMessage('');
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    router.push('/');
-  };
-
+const Profile: React.FC = () => {
   const [showProfilePopup, setShowProfilePopup] = useState(false);
   const [profileMode, setProfileMode] = useState<'view' | 'edit-username' | 'edit-password'>('view');
   const [profileUsername, setProfileUsername] = useState('');
-  const [profilePassword, setProfilePassword] = useState('');
   const [newUsername, setNewUsername] = useState('');
+  const [profilePassword, setProfilePassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
   const [profileError, setProfileError] = useState('');
 
-  const handleProfile = () => {
+  const handleOpen = () => {
     setProfileUsername(localStorage.getItem('username') || '');
     setShowProfilePopup(true);
     setProfileMode('view');
@@ -78,95 +18,26 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="container mx-auto px-2 sm:px-4 md:px-6 lg:px-8 py-4 font-sans bg-[#F3F4F6] min-h-screen flex flex-col !important">
-      <Dashboard
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        questions={questions}
-        statuses={statuses}
-        loading={loading}
-        handleEditStatusClick={handleEditStatusClick}
-        setEditQuestion={setEditQuestion}
-        setShowEditQuestionPopup={setShowEditQuestionPopup}
-        setShowDeleteQuestionPopup={setShowDeleteQuestionPopup}
-        setShowAddQuestionPopup={setShowAddQuestionPopup}
-        handleLogout={handleLogout}
-        handleProfile={handleProfile}
-      />
-
-      {showAddQuestionPopup && (
-        <AddQuestion
-          newQuestion={newQuestion}
-          setNewQuestion={setNewQuestion}
-          errorMessage={errorMessage}
-          onClose={() => setShowAddQuestionPopup(false)}
-          onSave={(newQuestion: Partial<Question>) =>
-            handleAddQuestion(newQuestion, () => {
-              setNewQuestion({ _id: '', content: ''});
-              setShowAddQuestionPopup(false);
-            })
-          }
-        />
-      )}
-
-      {showEditQuestionPopup && editQuestion && (
-        <EditQuestion
-          editQuestion={editQuestion}
-          setEditQuestion={setEditQuestion}
-          errorMessage={errorMessage}
-          onClose={() => {
-            setShowEditQuestionPopup(false);
-            setEditQuestion(null);
-          }}
-          onSave={(editQuestion: Question) =>
-            handleEditQuestion(editQuestion, () => {
-              setEditQuestion(null);
-              setShowEditQuestionPopup(false);
-            })
-          }
-        />
-      )}
-
-      {showDeleteQuestionPopup && (
-        <DeleteQuestion
-          onClose={() => setShowDeleteQuestionPopup(null)}
-          onConfirm={() =>
-            handleDeleteQuestion(showDeleteQuestionPopup, () => setShowDeleteQuestionPopup(null))
-          }
-        />
-      )}
-
-      {showEditStatusPopup && editStatus && (
-        <EditStatus
-          editStatus={editStatus}
-          setEditStatus={setEditStatus}
-          errorMessage={errorMessage}
-          onClose={() => {
-            setShowEditStatusPopup(false);
-            setEditStatus(null);
-            setErrorMessage('');
-          }}
-          onSave={(editStatus: Status) =>
-            handleEditStatus(editStatus, () => {
-              setEditStatus(null);
-              setShowEditStatusPopup(false);
-            })
-          }
-          onReset={handleResetStatus}
-        />
-      )}
+    <>
+      <button
+        className="bg-[#3F99E9] text-white px-4 py-2 rounded-lg hover:bg-[#1B1B62] transition-colors font-semibold"
+        onClick={handleOpen}
+      >
+        Hồ sơ
+      </button>
 
       {showProfilePopup && (
-        <div className="absolute left-1/2 top-1/2 z-30 w-full max-w-md -translate-x-1/2 -translate-y-1/2">
-          <div className="bg-white rounded-2xl shadow-2xl p-6 relative border border-gray-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md relative">
             <button
-              className="absolute top-3 right-4 text-2xl text-gray-400 hover:text-gray-700"
+              className="absolute top-3 right-4 text-4xl text-gray-400 hover:text-gray-700"
               onClick={() => setShowProfilePopup(false)}
               title="Đóng"
             >
               ×
             </button>
-            <h2 className="text-2xl font-bold text-[#1B1B62] mb-6 text-center">Thông tin tài khoản</h2>
+
+            <h2 className="text-xl font-bold text-[#1B1B62] mb-6 text-center">Thông tin tài khoản</h2>
 
             {profileMode === 'view' && (
               <>
@@ -179,7 +50,7 @@ export default function AdminDashboard() {
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-100 text-base"
                     />
                     <button
-                      className="bg-[#F5C035] text-white px-4 py-2 rounded-lg hover:bg-[#1B1B62] transition-colors font-semibold"
+                      className="bg-[#F5C035] text-white px-3 py-2 rounded-lg hover:bg-[#1B1B62] transition-colors font-semibold cursor-pointer"
                       onClick={() => {
                         setProfileMode('edit-username');
                         setNewUsername('');
@@ -200,7 +71,7 @@ export default function AdminDashboard() {
                       className="w-full border border-gray-300 rounded-lg px-3 py-2 bg-gray-100 text-base"
                     />
                     <button
-                      className="bg-[#F5C035] text-white px-4 py-2 rounded-lg hover:bg-[#1B1B62] transition-colors font-semibold"
+                      className="bg-[#F5C035] text-white px-3 py-2 rounded-lg hover:bg-[#1B1B62] transition-colors font-semibold cursor-pointer"
                       onClick={() => {
                         setProfileMode('edit-password');
                         setNewPassword('');
@@ -223,25 +94,10 @@ export default function AdminDashboard() {
                     setProfileError('Vui lòng nhập đủ thông tin');
                     return;
                   }
-                  const res = await fetch('/api/trust/users/username', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      oldUsername: profileUsername,
-                      newUsername,
-                      password: profilePassword, // mật khẩu hiện tại
-                    }),
-                  });
-                  const data = await res.json();
-                  if (data.success) {
-                    setProfileMode('view');
-                    setProfileUsername(newUsername);
-                    localStorage.setItem('username', newUsername);
-                    setProfilePassword('');
-                    setProfileError('');
-                  } else {
-                    setProfileError(data.message || 'Đổi username thất bại');
-                  }
+                  // Gọi API đổi username
+                  setProfileMode('view');
+                  setProfileUsername(newUsername);
+                  localStorage.setItem('username', newUsername);
                 }}
               >
                 <div className="mb-4">
@@ -262,7 +118,7 @@ export default function AdminDashboard() {
                   />
                 </div>
                 {profileError && <div className="text-red-600 mb-2">{profileError}</div>}
-                <div className="flex gap-2 justify-end">
+                <div className="flex gap-2 justify-end cursor-pointer">
                   <button
                     type="submit"
                     className="bg-[#3F99E9] text-white px-4 py-2 rounded-lg hover:bg-[#1B1B62] transition-colors font-semibold"
@@ -271,7 +127,7 @@ export default function AdminDashboard() {
                   </button>
                   <button
                     type="button"
-                    className="bg-gray-300 px-4 py-2 rounded-lg font-semibold"
+                    className="bg-gray-300 px-4 py-2 rounded-lg font-semibold cursor-pointer hover:bg-[#1B1B62]"
                     onClick={() => setProfileMode('view')}
                   >
                     Hủy
@@ -295,6 +151,7 @@ export default function AdminDashboard() {
                     setProfileError('Mật khẩu phải tối thiểu 8 ký tự và có ký tự đặc biệt');
                     return;
                   }
+                  // Gọi API đổi password
                   const res = await fetch('/api/trust/users/password', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
@@ -313,6 +170,7 @@ export default function AdminDashboard() {
                   } else {
                     setProfileError(data.message || 'Đổi mật khẩu thất bại');
                   }
+                  console.log('username:', profileUsername, 'currentPassword:', currentPassword);
                 }}
               >
                 <div className="mb-4">
@@ -337,13 +195,13 @@ export default function AdminDashboard() {
                 <div className="flex gap-2 justify-end">
                   <button
                     type="submit"
-                    className="bg-[#3F99E9] text-white px-4 py-2 rounded-lg hover:bg-[#1B1B62] transition-colors font-semibold"
+                    className="bg-[#3F99E9] text-white px-4 py-2 rounded-lg hover:bg-[#1B1B62] transition-colors font-semibold cursor-pointer"
                   >
                     Lưu
                   </button>
                   <button
                     type="button"
-                    className="bg-gray-300 px-4 py-2 rounded-lg font-semibold"
+                    className="bg-gray-300 px-4 py-2 rounded-lg font-semibold hover:bg-[#1B1B62] cursor-pointer"
                     onClick={() => setProfileMode('view')}
                   >
                     Hủy
@@ -354,6 +212,8 @@ export default function AdminDashboard() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
-}
+};
+
+export default Profile;

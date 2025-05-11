@@ -9,10 +9,14 @@ interface Context {
   };
 }
 
-export async function GET(context: any) {
+export async function GET(request: Request, context: any) {
+  const { id } = await context.params;
+  if (!id) {
+    return new Response(JSON.stringify({ error: 'Missing id param' }), { status: 400 });
+  }
+
   try {
     await connectDB();
-    const { id } = context.params;
 
     // Nếu id không phải ObjectId, tìm theo question_id
     if (!/^[0-9a-fA-F]{24}$/.test(id)) {

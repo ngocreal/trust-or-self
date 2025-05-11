@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
     const body = await req.json();
-    const { question_id, count_a, count_b } = body; // Đảm bảo lấy đủ các trường
+    const { question_id, count_a, count_b } = body;
 
     if (!question_id) {
         return NextResponse.json({ error: 'question_id là bắt buộc.' }, { status: 400 });
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
     const existingStatus = await StatusModel.findOne({ question_id });
     if (existingStatus) {
-      return NextResponse.json({ error: 'Trạng thái cho Question ID này đã tồn tại.' }, { status: 409 }); // 409 Conflict
+      return NextResponse.json({ error: 'Trạng thái cho Question ID này đã tồn tại.' }, { status: 409 }); 
     }
 
     const newStatus = new StatusModel({

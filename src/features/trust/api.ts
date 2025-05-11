@@ -16,7 +16,7 @@ export const fetchStatus = async (questionId: string): Promise<Status | null> =>
     return res.json();
   }
   console.warn(`Status for question ${questionId} not found. Returning default.`);
-  return null; // Hoặc trả về một status mặc định { _id: questionId, question_id: questionId, count_a: 50, count_b: 50 }
+  return null; // Hoặc trả về một status mặc định {count_a: 50, count_b: 50 }
 };
 
 export const updateStatus = async (statusId: string, updatedStatus: Partial<Status>): Promise<Status> => {
@@ -42,7 +42,6 @@ export const createStatus = async (questionId: string): Promise<Status> => {
 
   if (!res.ok) {
     const errorData = await res.json();
-    // Nếu lỗi 409 thì fetch lại status
     if (res.status === 409) {
       return fetchStatus(questionId) as Promise<Status>;
     }

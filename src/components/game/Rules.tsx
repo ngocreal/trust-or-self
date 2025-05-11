@@ -1,10 +1,10 @@
 import React from 'react';
 
-interface RulesPopupProps {
+interface RulesProps {
   onClose: () => void;
 }
 
-export default function RulesPopup({ onClose }: RulesPopupProps) {
+export default function RulesPopup({ onClose }: RulesProps) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white p-10 rounded-lg text-center w-[500px] h-[300px] flex flex-col items-center justify-center">

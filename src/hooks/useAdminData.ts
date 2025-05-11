@@ -159,7 +159,7 @@ export const useAdminData = () => {
           body: JSON.stringify(editStatus),
         });
       } else {
-        // Trường hợp này xảy ra nếu không tìm thấy status cho question_id đó,
+        // Trường này xảy ra nếu không tìm thấy status cho question_id đó,
         // hoặc nếu existingStatus._id bị undefined (không mong muốn nếu dữ liệu được tải đúng)
         // Đây sẽ là POST để tạo mới status
         res = await fetch('/api/trust/status', {
@@ -172,7 +172,7 @@ export const useAdminData = () => {
       if (res.ok) {
         callback();
         setErrorMessage('');
-        fetchData(); // Tải lại dữ liệu sau khi lưu thành công
+        fetchData(); 
       } else {
         const errorData = await res.json();
         setErrorMessage(errorData.error || 'Có lỗi xảy ra khi lưu trạng thái.');
