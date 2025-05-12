@@ -1,17 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Question, Status } from '@/features/trust/types';
 
-// tạo ID ngẫu nhiên 
-const generateRandomId = (): string => {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = '';
-  const charactersLength = characters.length;
-  for (let i = 0; i < 5; i++) { // 5 ký tự
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
-};
-
 export const useAdminData = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [statuses, setStatuses] = useState<Status[]>([]);
@@ -24,7 +13,7 @@ export const useAdminData = () => {
 
   const fetchData = async () => {
     setLoading(true);
-    setErrorMessage(''); 
+    setErrorMessage('');
     try {
       const [questionsRes, statusesRes] = await Promise.all([
         fetch('/api/trust/questions'),
@@ -36,7 +25,7 @@ export const useAdminData = () => {
         try {
           const errorData = await questionsRes.json();
           errorText = errorData.error || errorText;
-        } catch (e) { }
+        } catch (e) {}
         throw new Error(errorText);
       }
       if (!statusesRes.ok) {
@@ -44,7 +33,7 @@ export const useAdminData = () => {
         try {
           const errorData = await statusesRes.json();
           errorText = errorData.error || errorText;
-        } catch (e) { }
+        } catch (e) {}
         throw new Error(errorText);
       }
 
@@ -53,7 +42,6 @@ export const useAdminData = () => {
 
       setQuestions(questionsData.message && typeof questionsData.message === 'string' && questionsData.message.includes('No questions found') ? [] : questionsData);
       setStatuses(statusesData.message && typeof statusesData.message === 'string' && statusesData.message.includes('No statuses found') ? [] : statusesData);
-
     } catch (error: unknown) {
       console.error('Lỗi khi lấy dữ liệu:', error);
       if (error && typeof error === 'object' && 'message' in error) {
@@ -73,16 +61,25 @@ export const useAdminData = () => {
   };
 
   const handleAddQuestion = async (newQuestion: Partial<Question>, callback: () => void) => {
-    setErrorMessage(''); 
+    setErrorMessage('');
+    console.log('New question:', newQuestion);
+    if (!newQuestion._id?.trim()) {
+      setErrorMessage('Mã câu hỏi không được để trống.');
+      return;
+    }
+    if (!newQuestion.content?.trim()) {
+      setErrorMessage('Nội dung không được để trống.');
+      return;
+    }
+    if (validateQuestionId(newQuestion._id)) {
+      setErrorMessage('Mã câu hỏi đã tồn tại.');
+      return;
+    }
     try {
-      // Tạo ID ngẫu nhiên và gán vào 
-      const randomId = generateRandomId();
-      const questionWithId = { ...newQuestion, _id: randomId };
-
       const res = await fetch('/api/trust/questions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(questionWithId), // Gửi câu hỏi đã có ID
+        body: JSON.stringify(newQuestion),
       });
       if (res.ok) {
         callback();
@@ -99,6 +96,11 @@ export const useAdminData = () => {
 
   const handleEditQuestion = async (editQuestion: Question, callback: () => void) => {
     setErrorMessage('');
+    console.log('Editing question:', editQuestion);
+    if (!editQuestion.content?.trim()) {
+      setErrorMessage('Nội dung không được để trống.');
+      return;
+    }
     try {
       const res = await fetch(`/api/trust/questions/${editQuestion._id}`, {
         method: 'PUT',
@@ -146,7 +148,7 @@ export const useAdminData = () => {
   };
 
   const handleEditStatus = async (editStatus: Status, callback: () => void) => {
-    setErrorMessage(''); 
+    setErrorMessage('');
     const isValidQuestionId = validateQuestionId(editStatus.question_id);
     if (!isValidQuestionId) {
       setErrorMessage('Question ID không tồn tại. Vui lòng nhập đúng Question ID.');
@@ -156,16 +158,13 @@ export const useAdminData = () => {
     try {
       const existingStatus = statuses.find((s) => s.question_id === editStatus.question_id);
       let res;
-      if (existingStatus && existingStatus._id) { 
+      if (existingStatus && existingStatus._id) {
         res = await fetch(`/api/trust/status/${existingStatus._id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(editStatus),
         });
       } else {
-        // Trường này xảy ra nếu không tìm thấy status cho question_id đó,
-        // hoặc nếu existingStatus._id bị undefined (không mong muốn nếu dữ liệu được tải đúng)
-        // Đây sẽ là POST để tạo mới status
         res = await fetch('/api/trust/status', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -176,7 +175,7 @@ export const useAdminData = () => {
       if (res.ok) {
         callback();
         setErrorMessage('');
-        fetchData(); 
+        fetchData();
       } else {
         const errorData = await res.json();
         setErrorMessage(errorData.error || 'Có lỗi xảy ra khi lưu trạng thái.');

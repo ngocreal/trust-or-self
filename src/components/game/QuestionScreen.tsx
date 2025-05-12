@@ -20,7 +20,7 @@ export default function QuestionScreen({
     <div className="relative w-full h-screen bg-[#686868] flex flex-col items-center justify-center text-white p-4">
       <div className="relative w-full flex justify-center">
         <div className="absolute z-20 left-1/2 -translate-x-1/2 -top-11">
-          <Image src="/trust-or-self-logo.png" alt="Logo" width={192} height={48} className="w-48" />
+          <Image src="/trust-or-self-logo.png" alt="Logo" width={160} height={48} className="w-48" />
         </div>
       </div>
 

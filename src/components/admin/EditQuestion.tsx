@@ -37,14 +37,22 @@ export default function EditQuestionPopup({
         <div className="formContainer p-3 sm:p-5">
           <form onSubmit={handleSubmit}>
             <label className="formLabel block text-xs sm:text-sm font-medium mb-1 sm:mb-2 text-gray-700">
-              Nội dung câu hỏi
+              Tình huống
+            </label>
+            <input
+              value={editQuestion._id || ''}
+              disabled
+              className="formInput w-full p-1 sm:p-2 border border-gray-300 rounded mb-2 sm:mb-4 text-xs sm:text-sm md:text-base bg-gray-200"
+            />
+            <label className="formLabel block text-xs sm:text-sm font-medium mb-1 sm:mb-2 text-gray-700">
+              Nội dung
             </label>
             <textarea
               value={editQuestion.content}
               onChange={(e) =>
                 setEditQuestion({ ...editQuestion, content: e.target.value })
               }
-              placeholder="Nhập nội dung câu hỏi"
+              placeholder="Nhập nội dung của tình huống"
               className="formInput w-full p-1 sm:p-2 border border-gray-300 rounded mb-2 sm:mb-4 text-xs sm:text-sm md:text-base"
             />
             {errorMessage && (

@@ -24,7 +24,7 @@ export default function AddQuestionPopup({
     <div className="popupOverlay fixed inset-0 bg-black/50 flex justify-center items-center z-50 px-2 sm:px-4">
       <div className="popup bg-[#F3F4F6] rounded-lg w-full max-w-[90%] sm:max-w-md max-h-[90vh] overflow-y-auto relative">
         <div className="popupHeader bg-[#3F99E9] text-white p-2 sm:p-2.5 rounded-t-lg text-center text-sm sm:text-base md:text-lg font-semibold">
-          Thêm câu hỏi
+          Thêm tình huống
         </div>
         <button
           onClick={onClose}
@@ -34,13 +34,20 @@ export default function AddQuestionPopup({
         </button>
         <div className="formContainer p-3 sm:p-5">
           <form onSubmit={handleSubmit}>
-            <label className="formLabel block text-xs sm:text-sm font-medium mb-1 sm:mb-2 text-gray-700">Câu hỏi</label>
+            <label className="formLabel block text-xs sm:text-sm font-medium mb-1 sm:mb-2 text-gray-700">Tình huống</label>
+            <input
+              value={newQuestion._id || ''}
+              onChange={e => setNewQuestion({ ...newQuestion, _id: e.target.value })}
+              placeholder="Nhập tiêu đề"
+              className="formInput w-full p-3 sm:p-4 border border-gray-300 rounded mb-2 sm:mb-4 text-sm sm:text-base md:text-lg"
+            />
+            <label className="formLabel block text-xs sm:text-sm font-medium mb-1 sm:mb-2 text-gray-700">Nội dung</label>
                      <textarea
                       value={newQuestion.content || ''}
                       onChange={(e) =>
                       setNewQuestion({ ...newQuestion, content: e.target.value })
                       }
-                      placeholder="Nội dung câu hỏi"
+                      placeholder="Nội dung của tình huống"
                       className="formInput w-full p-3 sm:p-4 border border-gray-300 rounded mb-2 sm:mb-4 text-sm sm:text-base md:text-lg resize-y min-h-[100px]"
                       />
             {errorMessage && (

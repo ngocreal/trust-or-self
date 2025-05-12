@@ -4,24 +4,24 @@ import connectDB from '@/lib/db';
 
 interface Context {
   params: {
-    id: string; 
+    id: string;
   };
 }
 
 export async function PUT(req: NextRequest, context: Context) {
   try {
     await connectDB();
-    const { id } = context.params; 
-    const updates = await req.json(); 
-
+    const { id } = context.params;
+    const updates = await req.json();
+    console.log('PUT body:', updates);
     if (updates._id && updates._id !== id) {
-        return NextResponse.json({ error: 'Mismatched ID in path and body' }, { status: 400 });
+      return NextResponse.json({ error: 'Mismatched ID in path and body' }, { status: 400 });
     }
-
-    delete updates._id; 
-
+    if (!updates.content?.trim()) {
+      return NextResponse.json({ error: 'Nội dung không được để trống' }, { status: 400 });
+    }
+    delete updates._id;
     const question = await QuestionsModel.findByIdAndUpdate(id, updates, { new: true });
-
     if (!question) {
       return NextResponse.json({ message: 'Question not found' }, { status: 404 });
     }
@@ -36,10 +36,8 @@ export async function PUT(req: NextRequest, context: Context) {
 export async function DELETE(req: NextRequest, context: Context) {
   try {
     await connectDB();
-    const { id } = context.params; 
-
+    const { id } = context.params;
     const result = await QuestionsModel.findByIdAndDelete(id);
-
     if (!result) {
       return NextResponse.json({ message: 'Question not found' }, { status: 404 });
     }

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Question, Status, Result } from '@/features/trust/types';
 import { fetchQuestions, fetchStatus, updateStatus, createStatus } from '@/features/trust/api';
@@ -26,6 +26,7 @@ export default function TrustGamePage() {
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [isLastThreeSeconds, setIsLastThreeSeconds] = useState(false);
   const router = useRouter();
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const handleSettings = useCallback(() => router.push('/login'), [router]);
   const fetchGameData = useCallback(async () => {
@@ -96,7 +97,7 @@ export default function TrustGamePage() {
     }
   }, [currentQuestion, questionsLoaded, gameStarted, result, remainingQuestions]);
 
-  // Đếm ngược
+  // Đếm ngược & hiệu ứng 3s cuối
   useEffect(() => {
     if (timerSeconds === null) return;
     setTimeLeft(timerSeconds);
@@ -111,7 +112,7 @@ export default function TrustGamePage() {
           }, 3000);
           return 0;
         }
-        // Khi còn 3 giây, chớp đỏ
+        // Khi còn 3 giây, chớp đỏ và phát âm thanh
         if (prev === 4) {
           setIsLastThreeSeconds(true);
         }
@@ -121,6 +122,15 @@ export default function TrustGamePage() {
 
     return () => clearInterval(interval);
   }, [timerSeconds]);
+
+  useEffect(() => {
+    if (isLastThreeSeconds && timerSeconds !== null && timeLeft > 0) {
+      audioRef.current?.play();
+    } else {
+      audioRef.current?.pause();
+      if (audioRef.current) audioRef.current.currentTime = 0;
+    }
+  }, [isLastThreeSeconds, timerSeconds, timeLeft]);
 
   const handleChoice = async (choice: 'trust' | 'self') => {
     console.log('Bạn đã chọn:', choice);
@@ -229,6 +239,7 @@ export default function TrustGamePage() {
 
   return (
     <div className="relative w-full h-screen bg-[#686868]">
+      <audio ref={audioRef} src="/beep.mp3" preload="auto" />
       {currentQuestion && !result && timerSeconds !== null && (
         <div className={
           `absolute top-70 left-1/2 -translate-x-1/2 px-10 py-4 rounded-xl bg-blue-700 text-white text-6xl font-bold select-none shadow-lg z-50 border-4 border-blue-900
