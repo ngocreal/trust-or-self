@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaUser, FaLock, FaSignInAlt } from 'react-icons/fa';
+import Image from 'next/image';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -27,9 +28,11 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ backgroundImage: "url('/splash-background.jpg')" }}>
       <div className="bg-[#686868] rounded-3xl shadow-2xl px-8 py-12 w-full max-w-xl flex flex-col items-center">
-        <img
+        <Image
           src="/trust-or-self-logo.png"
           alt="Logo"
+          width={120}
+          height={100}
           className="w-30 h-25 mb-4"
         />
         <h2 className="text-3xl font-bold text-[#1b1b62] text-center mb-8 leading-snug">

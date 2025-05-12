@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaCog, FaQuestion } from 'react-icons/fa';
+import Image from 'next/image';
 
 interface FinishScreenProps {
   onReplay: () => void;
@@ -10,7 +11,7 @@ interface FinishScreenProps {
 export default function FinishScreen({ onReplay, onSettings, onShowRules }: FinishScreenProps) {
   return (
     <div className="h-screen bg-[#686868] flex flex-col items-center justify-center text-white relative">
-      <img src="/trust-or-self-logo.png" alt="Logo" className="w-60 mb-15" />
+      <Image src="/trust-or-self-logo.png" alt="Logo" width={240} height={120} className="w-60 mb-16" />
       <h1 className="text-7xl font-bold mb-10">Chúc mừng</h1>
       <p className="text-4xl font-bold mb-10">bạn đã hoàn thành trò chơi</p>
       <button

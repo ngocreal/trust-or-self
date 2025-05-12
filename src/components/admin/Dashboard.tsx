@@ -35,7 +35,7 @@ export default function DashboardLayout({
     <div className="w-full min-h-screen flex flex-col">
       <div className="header flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
         <div className="flex items-center gap-3">
-          <Image src="/trust-or-self-logo.png" alt="Logo" width={90} height={90} />
+          <Image src="/trust-or-self-logo.png" alt="Logo" width={90} height={90} priority />
           <span className="text-lg sm:text-xl md:text-3xl font-bold text-gray-800">Xin chào Admin!</span>
         </div>
         <div className="headerButtons flex gap-2 flex-wrap">

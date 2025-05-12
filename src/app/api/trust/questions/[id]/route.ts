@@ -26,9 +26,10 @@ export async function PUT(req: NextRequest, context: Context) {
       return NextResponse.json({ message: 'Question not found' }, { status: 404 });
     }
     return NextResponse.json(question);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating question:', error);
-    return NextResponse.json({ error: 'Failed to update question', details: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: 'Failed to update question', details: message }, { status: 500 });
   }
 }
 
@@ -43,8 +44,9 @@ export async function DELETE(req: NextRequest, context: Context) {
       return NextResponse.json({ message: 'Question not found' }, { status: 404 });
     }
     return NextResponse.json({ message: 'Deleted successfully' });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting question:', error);
-    return NextResponse.json({ error: 'Failed to delete question', details: error.message }, { status: 500 });
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: 'Failed to delete question', details: message }, { status: 500 });
   }
 }

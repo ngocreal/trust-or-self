@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaCog, FaQuestion } from 'react-icons/fa';
 import { Result } from '@/features/trust/types';
+import Image from 'next/image';
 
 interface ResultScreenProps {
   result: Result;
@@ -12,12 +13,14 @@ interface ResultScreenProps {
 export default function ResultScreen({ result, onNextQuestion, onSettings, onShowRules }: ResultScreenProps) {
   return (
     <div className="h-screen bg-[#686868] flex flex-col items-center justify-center text-white">
-      <img src="/trust-or-self-logo.png" alt="Logo" className="w-60 mb-2" />
+      <Image src="/trust-or-self-logo.png" alt="Logo" width={240} height={96} className="w-60 mb-2" />
       <h1 className="text-9xl font-bold mb-2">{result.percentage}%</h1>
       <p className="text-4xl font-bold mb-4">người cùng suy nghĩ với bạn</p>
-      <img
+      <Image
         src={result.choice === 'trust' ? '/trust-button.png' : '/self-button.png'}
         alt={result.choice}
+        width={160}
+        height={160}
         className="w-40 h-40 mb-2"
       />
       <button

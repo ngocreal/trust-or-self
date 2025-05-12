@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaQuestion } from 'react-icons/fa';
 import { Question } from '@/features/trust/types';
+import Image from 'next/image';
 
 interface QuestionScreenProps {
   currentQuestion: Question | null;
@@ -19,7 +20,7 @@ export default function QuestionScreen({
     <div className="relative w-full h-screen bg-[#686868] flex flex-col items-center justify-center text-white p-4">
       <div className="relative w-full flex justify-center">
         <div className="absolute z-20 left-1/2 -translate-x-1/2 -top-11">
-          <img src="/trust-or-self-logo.png" alt="Logo" className="w-48" />
+          <Image src="/trust-or-self-logo.png" alt="Logo" width={192} height={48} className="w-48" />
         </div>
       </div>
 
@@ -43,7 +44,7 @@ export default function QuestionScreen({
                 onChoice('trust');
               }}
             >
-              <img src="/trust-button.png" alt="Trust" className="w-38 h-38 cursor-pointer" />
+              <Image src="/trust-button.png" alt="Trust" width={120} height={120} className="w-36 h-36 cursor-pointer" />
             </button>
             <span className="text-white text-4xl font-bold mt-4 text-center w-full">Trust</span>
           </div>
@@ -54,7 +55,7 @@ export default function QuestionScreen({
                 onChoice('self');
               }}
             >
-              <img src="/self-button.png" alt="Self" className="w-38 h-38 cursor-pointer" />
+              <Image src="/self-button.png" alt="Self" width={120} height={120} className="w-36 h-36 cursor-pointer" />
             </button>
             <span className="text-white text-4xl font-bold mt-4 text-center w-full">Self</span>
           </div>

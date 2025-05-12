@@ -8,9 +8,10 @@ export async function GET() {
     await connectDB();
     const statuses = await StatusModel.find();
     return NextResponse.json(statuses.length ? statuses : { message: 'No statuses found' });
-  } catch (error: any) { 
+  } catch (error: unknown) { 
     console.error('Lỗi khi lấy danh sách trạng thái:', error);
-    return NextResponse.json({ error: 'Failed to fetch statuses', details: error.message }, { status: 500 });
+    const errMsg = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: 'Failed to fetch statuses', details: errMsg }, { status: 500 });
   }
 }
 
@@ -41,14 +42,20 @@ export async function POST(req: NextRequest) {
     });
 
     await newStatus.save(); 
-
-    return NextResponse.json(newStatus, { status: 201 }); 
-  } catch (error: any) { 
+    return NextResponse.json({ message: 'Trạng thái mới đã được thêm thành công.' }, { status: 201 });
+  } catch (error: unknown) { 
     console.error('Lỗi khi thêm trạng thái mới:', error);
-    if (error.code === 11000) { 
+    // Check for MongoDB duplicate key error
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      (error as { code?: number }).code === 11000
+    ) {
       return NextResponse.json({ error: 'Trạng thái cho Question ID này đã tồn tại.' }, { status: 409 });
     }
-    return NextResponse.json({ error: 'Lỗi server khi thêm trạng thái mới.', details: error.message }, { status: 500 });
+    const errMsg = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: 'Lỗi server khi thêm trạng thái mới.', details: errMsg }, { status: 500 });
   }
 }
 
@@ -77,9 +84,10 @@ export async function PATCH(req: NextRequest) {
     }
 
     await status.save();
-    return NextResponse.json(status);
-  } catch (error: any) { 
+    return NextResponse.json({ message: 'Status updated successfully', status: status.toObject() }, { status: 200 });
+  } catch (error: unknown) { 
     console.error('Lỗi khi cập nhật số liệu trạng thái:', error);
-    return NextResponse.json({ error: 'Failed to update status counts', details: error.message }, { status: 500 });
+    const errMsg = error instanceof Error ? error.message : String(error);
+    return NextResponse.json({ error: 'Failed to update status counts', details: errMsg }, { status: 500 });
   }
 }

@@ -54,9 +54,13 @@ export const useAdminData = () => {
       setQuestions(questionsData.message && typeof questionsData.message === 'string' && questionsData.message.includes('No questions found') ? [] : questionsData);
       setStatuses(statusesData.message && typeof statusesData.message === 'string' && statusesData.message.includes('No statuses found') ? [] : statusesData);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Lỗi khi lấy dữ liệu:', error);
-      setErrorMessage(error.message || 'Có lỗi xảy ra khi tải dữ liệu.');
+      if (error && typeof error === 'object' && 'message' in error) {
+        setErrorMessage((error as { message?: string }).message || 'Có lỗi xảy ra khi tải dữ liệu.');
+      } else {
+        setErrorMessage('Có lỗi xảy ra khi tải dữ liệu.');
+      }
       setQuestions([]);
       setStatuses([]);
     } finally {
