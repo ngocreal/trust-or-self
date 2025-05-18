@@ -2,13 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import QuestionsModel from '@/models/Questions';
 import connectDB from '@/lib/db';
 
-interface Context {
-  params: {
-    id: string;
-  };
-}
-
-export async function PUT(req: NextRequest, context: Context) {
+export async function PUT(req: NextRequest, context: { params: { id: string } }) {
   try {
     await connectDB();
     const { id } = context.params;
@@ -33,7 +27,7 @@ export async function PUT(req: NextRequest, context: Context) {
   }
 }
 
-export async function DELETE(req: NextRequest, context: Context) {
+export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
   try {
     await connectDB();
     const { id } = context.params;
