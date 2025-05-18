@@ -18,7 +18,6 @@ export default function AdminDashboard() {
     loading,
     errorMessage,
     setErrorMessage,
-    fetchData,
     handleAddQuestion,
     handleEditQuestion,
     handleDeleteQuestion,

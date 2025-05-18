@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import StatusModel from '@/models/Status';
 import QuestionsModel from '@/models/Questions'; 
 import connectDB from '@/lib/db';
-import mongoose from 'mongoose';
 interface Context {
   params: {
     id: string; 
