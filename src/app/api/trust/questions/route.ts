@@ -7,8 +7,10 @@ export async function GET() {
     await connectDB();
     const questions = await QuestionsModel.find();
     return NextResponse.json(questions.length ? questions : { message: 'No questions found' });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch questions' }, { status: 500 });
+  } catch (error: unknown) {
+    console.error('Error fetching questions:', error);
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json({ error: 'Failed to fetch questions', details: message }, { status: 500 });
   }
 }
 
